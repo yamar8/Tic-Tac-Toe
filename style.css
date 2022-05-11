@@ -1,0 +1,22 @@
+
+#board {
+    background-color: rgba(255, 127, 80, 0.244);
+      display: grid;
+      gap: 1px;
+      grid-template-columns: 0.1fr 0.1fr 0.1fr;
+      padding: 50px;
+    }
+
+.card {
+    background-color: rgba(232, 12, 12, 0.728);
+    height: 100px;
+    width: 100px;
+    min-width: 100px;
+    margin: auto;
+    font-size: 100px;
+    text-align: center;
+    border-radius: 10px;
+      border-style: solid;
+      border-color: rgb(123, 205, 90);
+  
+  }
