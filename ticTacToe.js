@@ -1,49 +1,36 @@
 let cards = [];
 let openX = []; //openX = [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
 let openO = [];
-let players = [0,1];
-let counter  = 0;
+let players = [0, 1];
+let counter = 0;
 
-let winX = [0,0,0]; // [0,0,0]
-let winO = [0,0,0]; // [0,0,0]
+let winX = [0, 0, 0]; // [0,0,0]
+let winO = [0, 0, 0]; // [0,0,0]
 
-
-
-
-function createSign(sign,element,id) {
+function createSign(sign, element, id) {
   return {
     sign: sign,
     element: element,
-    id: id
+    id: id,
   };
 }
 
-
-const clickHandle = (e)=>{
-  
-  if(counter==0){
+const clickHandle = (e) => {
+  if (counter == 0) {
     openX.push(JSON.parse(e.target.id));
     e.target.innerHTML = "X";
     counter++;
     console.log("it's x turn");
-  }else{
+    if(isXwin()){
+      alert("x is win!");
+    }
+  } else {
     openO.push(JSON.parse(e.target.id));
     e.target.innerHTML = "O";
     counter--;
     console.log("it's y turn");
   }
-  
-//openX = [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
-//winX =  [0,0,0]
-  for(let count = 0;count<openX.length;count++){
-    console.log(winX[openX[count].i]++);
-
-    }
-
-  }
-
-
-
+};
 
 createBoard(3);
 
@@ -57,15 +44,14 @@ function createBoard(boardSize) {
     for (let j = cards[i].length; j < boardSize; j++) {
       // debugger;
       const element = createCardEl(counter);
-      element.id = JSON.stringify({i,j});
+      element.id = JSON.stringify({ i, j });
       cards[i].push(element);
       board.append(element);
-      element.addEventListener("click",clickHandle);
+      element.addEventListener("click", clickHandle);
     }
   }
   console.log(cards);
 }
-
 
 function createCardEl(idx) {
   const cardEl = document.createElement("div");
@@ -74,16 +60,23 @@ function createCardEl(idx) {
   return cardEl;
 }
 
-
-function boardSize(){
-
+function isXwin() {
+  //openX = [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
+  //winX =  [0,0,0]
+  winX = [0, 0, 0]; // initialize winX in each iteration
+  for (let k = 0; k < openX.length; k++) {
+    console.log(openX[k].i);
+    winX[openX[k].i]++;
+    if (winX[openX[k].i] == 3) {
+      return true;
+    }
+  }
+  return false;
 }
 
-function player(counter){
-  
+function boardSize() {}
 
-
-}
+function player(counter) {}
 
 // var i= 1
 // var j=2
@@ -94,9 +87,6 @@ function player(counter){
 // var {i,j} = JSON.parse(el.id)
 // console.log(j);
 
-
-
-
 // function row(i){
 //  let counter = 0;
 //   if(i==0){
@@ -105,7 +95,6 @@ function player(counter){
 //   if(counter==3){
 //     console.log("win");
 //   }
-
 
 // }
 // function column(j){
