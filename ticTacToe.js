@@ -1,10 +1,17 @@
 let cards = [];
-let openX = []; //openX = [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
+let open = []; //open = [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
 let openO = [];
-let players = [0, 1];
+let TurnOfX = false;
 let counter = 0;
 
-let winX = [0, 0, 0]; // [0,0,0]
+/* 3X3 board illustration: 
+
+{i: 0, j: 0},{i: 0, j: 1},{i: 0, j: 2}
+{i: 1, j: 0},{i: 1, j: 1},{i: 1, j: 2}
+{i: 2, j: 0},{i: 2, j: 1},{i: 2, j: 2}
+*/
+
+let rowWin = [0, 0, 0];
 let winO = [0, 0, 0]; // [0,0,0]
 
 function createSign(sign, element, id) {
@@ -16,19 +23,23 @@ function createSign(sign, element, id) {
 }
 
 const clickHandle = (e) => {
-  if (counter == 0) {
-    openX.push(JSON.parse(e.target.id));
+ 
+  open.push(JSON.parse(e.target.id));
+  if (TurnOfX) {
     e.target.innerHTML = "X";
-    counter++;
     console.log("it's x turn");
-    if(isXwin()){
+    
+    if(isWin()){
       alert("x is win!");
     }
+    TurnOfX = false;
   } else {
-    openO.push(JSON.parse(e.target.id));
     e.target.innerHTML = "O";
-    counter--;
     console.log("it's y turn");
+    if(isWin()){
+      alert("y is win");
+    }
+    TurnOfX = true;
   }
 };
 
@@ -60,18 +71,25 @@ function createCardEl(idx) {
   return cardEl;
 }
 
-function isXwin() {
-  //openX = [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
-  //winX =  [0,0,0]
-  winX = [0, 0, 0]; // initialize winX in each iteration
-  for (let k = 0; k < openX.length; k++) {
-    console.log(openX[k].i);
-    winX[openX[k].i]++;
-    if (winX[openX[k].i] == 3) {
+function fullRow(){
+  //open array looks like this: [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
+  //rowWin array looks like this: [0,0,0]
+  let k = Number(TurnOfX); // k  = 1 or 0 according to the current turn
+  rowWin = [0, 0, 0]; // initialize rowWin in each iteration
+  for (; k < open.length; k+=2) { //  iterate on even cells
+    console.log(open[k].i);
+    rowWin[open[k].i]++;
+    console.log("winx: " + rowWin)
+    if (rowWin[open[k].i] == 3) {
       return true;
     }
   }
   return false;
+}
+
+
+function isWin() {
+  return fullRow();
 }
 
 function boardSize() {}
@@ -106,3 +124,5 @@ function player(counter) {}
 // function DownToUp(i,j){
 
 // }
+
+
