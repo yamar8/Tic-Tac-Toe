@@ -29,7 +29,6 @@ const clickHandle = (e) => {
   if (isWin()) {
     alert("we have a winner");
   }
-
   if (TurnOfX) {
     e.target.innerHTML = "X";
     console.log("it's x turn");
@@ -52,7 +51,7 @@ function sequenceInit() {
 
 function createBoard(boardSize) {
   const board = document.getElementById("board");
-  board.style.gridTemplateColumns = "100px ".repeat(boardSize);
+  board.style.gridTemplateColumns = "150px ".repeat(boardSize);
   let counter = 0;
   for (let i = 0; i < boardSize; i++) {
     console.log(board.style.gridTemplateColumns);
@@ -79,7 +78,8 @@ function createCardEl(idx) {
 }
 
 function isWin() {
-  return fullRow() || fullColumn();
+  console.log(fullRow(), fullColumn(), rtlDiagonal());
+  return fullRow() || fullColumn() || rtlDiagonal();
 }
 
 function fullRow() {
@@ -111,6 +111,24 @@ function fullColumn() {
   }
   return false;
 }
+
+function rtlDiagonal() {
+  let counter = 0;
+  for (let k = 0; k < open.length; k += 2) {
+    counter++;
+    if(open[k].i != open[k].j){
+      return false;
+    }
+  }
+  if (counter == boardSize) {
+    return true;
+  }
+}
+
+function ltrDiagonal() {
+//left to rigth diagonal win
+}
+
 
 function player(counter) {}
 

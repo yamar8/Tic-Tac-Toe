@@ -1,17 +1,22 @@
+body{
+
+}
 
 #board {
-    background-color: rgba(255, 127, 80, 0.244);
+    background-color: rgba(89, 255, 80, 0.244);
       display: grid;
-      /* grid-template-columns: repeat(5, 100px); */
-            /* padding: 50px; */
-      grid-gap: 5px;
+      /* grid-template-columns: done in JavaScript */
+      /* grid-gap: 5px; */
+      width: 300px;
+     margin: 0 auto;
+
     }
 
 .card {
     background-color: rgba(232, 12, 12, 0.728);
     /* aspect-ratio: 1; */
-    height: 100px;
-    width: 100px;
+    height: 150px;
+    width: 150px;
     /* margin: auto; */
     font-size: 65px;
     text-align: center;
@@ -19,4 +24,29 @@
       border-style: solid;
       border-color: rgb(123, 205, 90);
   
+  }
+
+
+  .topnav {
+    overflow: hidden;
+    background-color: #333;
+  }
+  
+  .topnav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+  
+  .topnav a:hover {
+    background-color: #ddd;
+    color: black;
+  }
+  
+  .topnav a.active {
+    background-color: #04AA6D;
+    color: white;
   }
