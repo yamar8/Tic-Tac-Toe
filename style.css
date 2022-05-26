@@ -2,16 +2,17 @@
 #board {
     background-color: rgba(255, 127, 80, 0.244);
       display: grid;
-      gap: 1px;
-      grid-template-columns: 0.1fr 0.1fr 0.1fr;
-      padding: 50px;
+      /* grid-template-columns: repeat(5, 100px); */
+            /* padding: 50px; */
+      grid-gap: 5px;
     }
 
 .card {
     background-color: rgba(232, 12, 12, 0.728);
+    /* aspect-ratio: 1; */
     height: 100px;
     width: 100px;
-    margin: auto;
+    /* margin: auto; */
     font-size: 65px;
     text-align: center;
     border-radius: 10px;

@@ -4,6 +4,8 @@ let openO = [];
 let TurnOfX = false;
 let counter = 0;
 
+let boardSize = 3;
+
 /* 3X3 board illustration: 
 
 {i: 0, j: 0},{i: 0, j: 1},{i: 0, j: 2}
@@ -11,8 +13,7 @@ let counter = 0;
 {i: 2, j: 0},{i: 2, j: 1},{i: 2, j: 2}
 */
 
-let rowWin = [0, 0, 0];
-let winO = [0, 0, 0]; // [0,0,0]
+let sequence = []; // [0, 0, 0];
 
 function createSign(sign, element, id) {
   return {
@@ -23,32 +24,38 @@ function createSign(sign, element, id) {
 }
 
 const clickHandle = (e) => {
- 
   open.push(JSON.parse(e.target.id));
+
+  if (isWin()) {
+    alert("we have a winner");
+  }
+
   if (TurnOfX) {
     e.target.innerHTML = "X";
     console.log("it's x turn");
-    
-    if(isWin()){
-      alert("x is win!");
-    }
     TurnOfX = false;
   } else {
     e.target.innerHTML = "O";
-    console.log("it's y turn");
-    if(isWin()){
-      alert("y is win");
-    }
+    console.log("it's O turn");
     TurnOfX = true;
   }
 };
 
-createBoard(3);
+createBoard(boardSize);
+
+function sequenceInit() {
+  sequence = [];
+  for (let i = 0; i < boardSize; i++) {
+    sequence.push(0);
+  }
+}
 
 function createBoard(boardSize) {
   const board = document.getElementById("board");
+  board.style.gridTemplateColumns = "100px ".repeat(boardSize);
   let counter = 0;
   for (let i = 0; i < boardSize; i++) {
+    console.log(board.style.gridTemplateColumns);
     cards.push([]); // cards = [[],[],[]]
   }
   for (let i = 0; i < boardSize; i++) {
@@ -71,28 +78,39 @@ function createCardEl(idx) {
   return cardEl;
 }
 
-function fullRow(){
+function isWin() {
+  return fullRow() || fullColumn();
+}
+
+function fullRow() {
   //open array looks like this: [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
   //rowWin array looks like this: [0,0,0]
   let k = Number(TurnOfX); // k  = 1 or 0 according to the current turn
-  rowWin = [0, 0, 0]; // initialize rowWin in each iteration
-  for (; k < open.length; k+=2) { //  iterate on even cells
-    console.log(open[k].i);
-    rowWin[open[k].i]++;
-    console.log("winx: " + rowWin)
-    if (rowWin[open[k].i] == 3) {
+  sequenceInit(); // initialize rowWin in each iteration
+  for (; k < open.length; k += 2) {
+    //  iterate on even cells
+    sequence[open[k].i]++;
+    if (sequence[open[k].i] == boardSize) {
       return true;
     }
   }
   return false;
 }
 
-
-function isWin() {
-  return fullRow();
+function fullColumn() {
+  //open array looks like this: [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
+  //rowWin array looks like this: [0,0,0]
+  let k = Number(TurnOfX); // k  = 1 or 0 according to the current turn
+  sequenceInit(); // initialize rowWin in each iteration
+  for (; k < open.length; k += 2) {
+    //  iterate on even cells
+    sequence[open[k].j]++;
+    if (sequence[open[k].j] == boardSize) {
+      return true;
+    }
+  }
+  return false;
 }
-
-function boardSize() {}
 
 function player(counter) {}
 
@@ -124,5 +142,3 @@ function player(counter) {}
 // function DownToUp(i,j){
 
 // }
-
-
