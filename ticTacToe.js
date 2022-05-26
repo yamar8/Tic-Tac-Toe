@@ -1,19 +1,23 @@
 let cards = [];
 let open = []; //open = [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
-let openO = [];
+let openSaved = [];
 let TurnOfX = false;
-let counter = 0;
-
+let TurnOfXsaved = false;
+let sequence = []; // [0, 0, 0];
 let boardSize = 3;
 
+createUndoButton();
+createNewGameButton();
+createSaveGameButton();
+createLoadGameButton();
+
+function updateCardByopenArary() {}
 /* 3X3 board illustration: 
 
 {i: 0, j: 0},{i: 0, j: 1},{i: 0, j: 2}
 {i: 1, j: 0},{i: 1, j: 1},{i: 1, j: 2}
 {i: 2, j: 0},{i: 2, j: 1},{i: 2, j: 2}
 */
-
-let sequence = []; // [0, 0, 0];
 
 function createSign(sign, element, id) {
   return {
@@ -22,9 +26,96 @@ function createSign(sign, element, id) {
     id: id,
   };
 }
+function createUndoButton() {
+  const undoEl = document.getElementById("undo");
+  undoEl.addEventListener("click", () => {
+    undo();
+  });
+}
+function createNewGameButton() {
+  const newGameEl = document.getElementById("newgame");
+  newGameEl.addEventListener("click", () => {
+    while (open.length > 0) {
+      undo();
+    }
+  });
+}
 
-function undo(){
-  
+function createSaveGameButton() {
+  const saveGameEl = document.getElementById("savegame");
+  saveGameEl.addEventListener("click", () => {
+    saveGame();
+  });
+}
+function createLoadGameButton() {
+  const saveGameEl = document.getElementById("loadgame");
+  saveGameEl.addEventListener("click", () => {
+    loadGame();
+  });
+}
+
+function saveGame() {
+  for (let i = 0; i < open.length; i++) {
+    openSaved.push(open[i]);
+  }
+  TurnOfXsaved = TurnOfX;
+}
+
+function loadGame() {
+  ///////need to fix open array in load game.
+  TurnOfX = TurnOfXsaved;
+  let open = [];
+  for (let i = 0; i < openSaved.length; i++) {
+    open.push(openSaved[i]);
+  }
+  openSaved = [];
+
+  //clean all the board signs
+    for (let i = 0; i < cards.length; i++) {
+    for (let j = 0; j < cards[i].length; j++) {
+      cards[i][j].innerHTML = "";
+    }
+  }
+
+  for(let k =0;k<open.length;k++){
+    let i = open[k].i;
+    let j = open[k].j;
+    if(k%2 == 0){
+      cards[i][j].innerHTML = "o";
+    }else{
+      cards[i][j].innerHTML = "x";
+    }
+  }
+
+
+  // for (let i = 0; i < cards.length; i++) {
+  //   for (let j = 0; j < cards[i].length; j++) {
+  //     console.log("cards[i][j].id: " + cards[i][j].id);
+  //     console.log("open[i]: " + JSON.stringify[open[i]]);
+  //     if (cards[i][j].id == JSON.stringify[open[i]]) {
+  //       cards[i][j].innerHTML = "x";
+  //     }
+  //   }
+  // }
+}
+
+function undo() {
+  if (open.length == 0) {
+    return;
+  }
+  let lastCell = open.length - 1;
+  let i = open[lastCell].i;
+  let j = open[lastCell].j;
+  cards[i][j].innerHTML = "";
+  open.pop();
+  TurnOfX = !TurnOfX;
+}
+
+function sequenceInit() {
+  sequence = [];
+  for (let i = 0; i < boardSize; i++) {
+    sequence.push(0);
+  }
 }
 
 const clickHandle = (e) => {
@@ -45,13 +136,6 @@ const clickHandle = (e) => {
 };
 
 createBoard(boardSize);
-
-function sequenceInit() {
-  sequence = [];
-  for (let i = 0; i < boardSize; i++) {
-    sequence.push(0);
-  }
-}
 
 function createBoard(boardSize) {
   const board = document.getElementById("board");
@@ -121,7 +205,7 @@ function rtlDiagonal() {
   let k = Number(TurnOfX);
   for (; k < open.length; k += 2) {
     counter++;
-    if(open[k].i != open[k].j){
+    if (open[k].i != open[k].j) {
       return false;
     }
   }
@@ -131,37 +215,5 @@ function rtlDiagonal() {
 }
 
 function ltrDiagonal() {
-//left to rigth diagonal win
+  //left to rigth diagonal win
 }
-
-
-function player(counter) {}
-
-// var i= 1
-// var j=2
-
-// const el={}
-// el.id = JSON.stringify({i,j})
-// console.log(el);
-// var {i,j} = JSON.parse(el.id)
-// console.log(j);
-
-// function row(i){
-//  let counter = 0;
-//   if(i==0){
-//     counter++
-//   }
-//   if(counter==3){
-//     console.log("win");
-//   }
-
-// }
-// function column(j){
-
-// }
-// function upToDown(i,j){
-
-// }
-// function DownToUp(i,j){
-
-// }
