@@ -23,6 +23,10 @@ function createSign(sign, element, id) {
   };
 }
 
+function undo(){
+  
+}
+
 const clickHandle = (e) => {
   open.push(JSON.parse(e.target.id));
 
@@ -114,7 +118,8 @@ function fullColumn() {
 
 function rtlDiagonal() {
   let counter = 0;
-  for (let k = 0; k < open.length; k += 2) {
+  let k = Number(TurnOfX);
+  for (; k < open.length; k += 2) {
     counter++;
     if(open[k].i != open[k].j){
       return false;
