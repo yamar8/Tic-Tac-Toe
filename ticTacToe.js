@@ -5,13 +5,13 @@ let TurnOfX = false;
 let TurnOfXsaved = false;
 let sequence = []; // [0, 0, 0];
 let boardSize = 3;
+let savedIndex = 0;
 
 createUndoButton();
 createNewGameButton();
 createSaveGameButton();
 createLoadGameButton();
 
-function updateCardByopenArary() {}
 /* 3X3 board illustration: 
 
 {i: 0, j: 0},{i: 0, j: 1},{i: 0, j: 2}
@@ -55,37 +55,60 @@ function createLoadGameButton() {
 }
 
 function saveGame() {
+  
+  savedIndex = open.length; // last index 
+  
   for (let i = 0; i < open.length; i++) {
     openSaved.push(open[i]);
   }
-  TurnOfXsaved = TurnOfX;
-}
+  
+
+} 
+  
+//   TurnOfXsaved = TurnOfX;
+// }
 
 function loadGame() {
-  ///////need to fix open array in load game.
-  TurnOfX = TurnOfXsaved;
-  let open = [];
-  for (let i = 0; i < openSaved.length; i++) {
-    open.push(openSaved[i]);
+  let undoCounter = open.length - savedIndex;
+  while(undoCounter>0){
+    undo();
+    undoCounter--;
   }
-  openSaved = [];
+}
 
-  //clean all the board signs
-    for (let i = 0; i < cards.length; i++) {
-    for (let j = 0; j < cards[i].length; j++) {
-      cards[i][j].innerHTML = "";
-    }
-  }
+function redo(){
+  let index = open.length;
+  open.push(openSaved[index]);
+  let i = openSaved[index].i;
+  let j = openSaved[index].j;
+  cards[i][j].innerHTML = TurnOfX ? "x" : "o";
+  TurnOfX = !TurnOfX;
+}
+// function loadGame() {
+//   ///////need to fix open array in load game.
+//   TurnOfX = TurnOfXsaved;
+//   let open = [];
+//   for (let i = 0; i < openSaved.length; i++) {
+//     open.push(openSaved[i]);
+//   }
+//   openSaved = [];
+//   console.log(open);
+//   //clean all the board signs
+//     for (let i = 0; i < cards.length; i++) {
+//     for (let j = 0; j < cards[i].length; j++) {
+//       cards[i][j].innerHTML = "";
+//     }
+//   }
 
-  for(let k =0;k<open.length;k++){
-    let i = open[k].i;
-    let j = open[k].j;
-    if(k%2 == 0){
-      cards[i][j].innerHTML = "o";
-    }else{
-      cards[i][j].innerHTML = "x";
-    }
-  }
+//   for(let k =0;k<open.length;k++){
+//     let i = open[k].i;
+//     let j = open[k].j;
+//     if(k%2 == 0){
+//       cards[i][j].innerHTML = "o";
+//     }else{
+//       cards[i][j].innerHTML = "x";
+//     }
+//   }
 
 
   // for (let i = 0; i < cards.length; i++) {
@@ -97,7 +120,7 @@ function loadGame() {
   //     }
   //   }
   // }
-}
+
 
 function undo() {
   if (open.length == 0) {
@@ -126,11 +149,11 @@ const clickHandle = (e) => {
   }
   if (TurnOfX) {
     e.target.innerHTML = "X";
-    console.log("it's x turn");
+    // console.log("it's x turn");
     TurnOfX = false;
   } else {
     e.target.innerHTML = "O";
-    console.log("it's O turn");
+    // console.log("it's O turn");
     TurnOfX = true;
   }
 };
@@ -142,7 +165,7 @@ function createBoard(boardSize) {
   board.style.gridTemplateColumns = "150px ".repeat(boardSize);
   let counter = 0;
   for (let i = 0; i < boardSize; i++) {
-    console.log(board.style.gridTemplateColumns);
+    // console.log(board.style.gridTemplateColumns);
     cards.push([]); // cards = [[],[],[]]
   }
   for (let i = 0; i < boardSize; i++) {
@@ -155,7 +178,7 @@ function createBoard(boardSize) {
       element.addEventListener("click", clickHandle);
     }
   }
-  console.log(cards);
+  // console.log(cards);
 }
 
 function createCardEl(idx) {
@@ -174,7 +197,7 @@ function fullRow() {
   //open array looks like this: [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
   //rowWin array looks like this: [0,0,0]
   let k = Number(TurnOfX); // k  = 1 or 0 according to the current turn
-  sequenceInit(); // initialize rowWin in each iteration
+  sequenceInit(); // initialize sequence array in each iteration
   for (; k < open.length; k += 2) {
     //  iterate on even cells
     sequence[open[k].i]++;
@@ -191,7 +214,6 @@ function fullColumn() {
   let k = Number(TurnOfX); // k  = 1 or 0 according to the current turn
   sequenceInit(); // initialize rowWin in each iteration
   for (; k < open.length; k += 2) {
-    //  iterate on even cells
     sequence[open[k].j]++;
     if (sequence[open[k].j] == boardSize) {
       return true;
