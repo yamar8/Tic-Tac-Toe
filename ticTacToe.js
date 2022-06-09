@@ -4,7 +4,7 @@ let openSaved = [];
 let TurnOfX = false;
 let TurnOfXsaved = false;
 let sequence = []; // [0, 0, 0];
-let boardSize = 3;
+let boardSize = 6;
 let savedIndex = 0;
 
 createUndoButton();
@@ -143,6 +143,7 @@ function sequenceInit() {
 
 const clickHandle = (e) => {
   open.push(JSON.parse(e.target.id));
+  // open.push(JSON.parse(e.target.id));
 
   if (isWin()) {
     setTimeout(() => {
@@ -150,12 +151,13 @@ const clickHandle = (e) => {
         12500;
     })
   }
+
   if (TurnOfX) {
-    e.target.innerHTML = "X";
+    e.target.innerHTML = "o";
     // console.log("it's x turn");
     TurnOfX = false;
   } else {
-    e.target.innerHTML = "O";
+    e.target.innerHTML = "x";
     // console.log("it's O turn");
     TurnOfX = true;
   }
@@ -245,7 +247,7 @@ function ltrDiagonal() {
   let k = Number(TurnOfX);
   for (; k < open.length; k += 2) {
     counter++;
-    if (((open[k].i) + (open[k].j)) != 2) {
+    if (((open[k].i) + (open[k].j)) != boardSize - 1) {
       return false;
     }
   }
