@@ -55,28 +55,28 @@ function createLoadGameButton() {
 }
 
 function saveGame() {
-  
+
   savedIndex = open.length; // last index 
-  
+
   for (let i = 0; i < open.length; i++) {
     openSaved.push(open[i]);
   }
-  
 
-} 
-  
+
+}
+
 //   TurnOfXsaved = TurnOfX;
 // }
 
 function loadGame() {
   let undoCounter = open.length - savedIndex;
-  while(undoCounter>0){
+  while (undoCounter > 0) {
     undo();
     undoCounter--;
   }
 }
 
-function redo(){
+function redo() {
   let index = open.length;
   open.push(openSaved[index]);
   let i = openSaved[index].i;
@@ -111,15 +111,15 @@ function redo(){
 //   }
 
 
-  // for (let i = 0; i < cards.length; i++) {
-  //   for (let j = 0; j < cards[i].length; j++) {
-  //     console.log("cards[i][j].id: " + cards[i][j].id);
-  //     console.log("open[i]: " + JSON.stringify[open[i]]);
-  //     if (cards[i][j].id == JSON.stringify[open[i]]) {
-  //       cards[i][j].innerHTML = "x";
-  //     }
-  //   }
-  // }
+// for (let i = 0; i < cards.length; i++) {
+//   for (let j = 0; j < cards[i].length; j++) {
+//     console.log("cards[i][j].id: " + cards[i][j].id);
+//     console.log("open[i]: " + JSON.stringify[open[i]]);
+//     if (cards[i][j].id == JSON.stringify[open[i]]) {
+//       cards[i][j].innerHTML = "x";
+//     }
+//   }
+// }
 
 
 function undo() {
@@ -145,7 +145,10 @@ const clickHandle = (e) => {
   open.push(JSON.parse(e.target.id));
 
   if (isWin()) {
-    alert("we have a winner");
+    setTimeout(() => {
+      alert("we have a winner"),
+        12500;
+    })
   }
   if (TurnOfX) {
     e.target.innerHTML = "X";
@@ -189,8 +192,8 @@ function createCardEl(idx) {
 }
 
 function isWin() {
-  console.log(fullRow(), fullColumn(), rtlDiagonal());
-  return fullRow() || fullColumn() || rtlDiagonal();
+  console.log(fullRow(), fullColumn(), rtlDiagonal(), ltrDiagonal());
+  return fullRow() || fullColumn() || rtlDiagonal() || ltrDiagonal();
 }
 
 function fullRow() {
@@ -238,4 +241,15 @@ function rtlDiagonal() {
 
 function ltrDiagonal() {
   //left to rigth diagonal win
+  let counter = 0;
+  let k = Number(TurnOfX);
+  for (; k < open.length; k += 2) {
+    counter++;
+    if (((open[k].i) + (open[k].j)) != 2) {
+      return false;
+    }
+  }
+  if (counter == boardSize) {
+    return true;
+  }
 }
