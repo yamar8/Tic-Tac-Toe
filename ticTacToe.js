@@ -69,19 +69,26 @@ function saveGame() {
 // }
 
 function loadGame() {
-  let undoCounter = open.length - savedIndex;
-  while (undoCounter > 0) {
-    undo();
-    undoCounter--;
+  if(open > openSaved){
+    let undoCounter = open.length - savedIndex;
+    while(undoCounter>0){
+      undo();
+      undoCounter--;
+    }
+  }else{
+    while(open.length != openSaved.length){
+      redo();
+    }
   }
 }
 
-function redo() {
+//redo function redo one turn according to the openSaved array.
+function redo(){
   let index = open.length;
   open.push(openSaved[index]);
   let i = openSaved[index].i;
   let j = openSaved[index].j;
-  cards[i][j].innerHTML = TurnOfX ? "x" : "o";
+  cards[i][j].innerHTML = TurnOfX ? "X" : "O";
   TurnOfX = !TurnOfX;
 }
 // function loadGame() {
@@ -121,7 +128,7 @@ function redo() {
 //   }
 // }
 
-
+//undo function undo one turn (going back one index in open array)
 function undo() {
   if (open.length == 0) {
     return;
