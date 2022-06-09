@@ -1,10 +1,11 @@
 let cards = [];
 let open = []; //open = [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
+// let open = localStorage.open; //open = [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
 let openSaved = [];
-let TurnOfX = false;
+let TurnOfX = Boolean;
 let TurnOfXsaved = false;
 let sequence = []; // [0, 0, 0];
-let boardSize = 6;
+let boardSize = 3;
 let savedIndex = 0;
 
 createUndoButton();
@@ -47,11 +48,35 @@ function createSaveGameButton() {
     saveGame();
   });
 }
+
 function createLoadGameButton() {
   const saveGameEl = document.getElementById("loadgame");
   saveGameEl.addEventListener("click", () => {
     loadGame();
   });
+}
+upDateTurnOFX()
+function upDateTurnOFX() {
+  if (JSON.parse(localStorage.open).length % 2 == 0) {
+    TurnOfX = false;
+  }
+  TurnOfX = true;
+}
+
+function loadFromLocalStorage() {
+  while (open.length != JSON.parse(localStorage.open).length) {
+
+    let index = open.length;
+    open.push(JSON.parse(localStorage.open)[index]);
+    let i = JSON.parse(localStorage.open)[index].i;
+    let j = JSON.parse(localStorage.open)[index].j;
+    // debugger
+    cards[i][j].innerHTML = TurnOfX ? "X" : "O";
+    TurnOfX = !TurnOfX;
+  }
+}
+function updatelocalStorage() {
+  localStorage.open = JSON.stringify(open)
 }
 
 function saveGame() {
@@ -69,21 +94,21 @@ function saveGame() {
 // }
 
 function loadGame() {
-  if(open > openSaved){
+  if (open > openSaved) {
     let undoCounter = open.length - savedIndex;
-    while(undoCounter>0){
+    while (undoCounter > 0) {
       undo();
       undoCounter--;
     }
-  }else{
-    while(open.length != openSaved.length){
+  } else {
+    while (open.length != openSaved.length) {
       redo();
     }
   }
 }
 
 //redo function redo one turn according to the openSaved array.
-function redo(){
+function redo() {
   let index = open.length;
   open.push(openSaved[index]);
   let i = openSaved[index].i;
@@ -149,26 +174,37 @@ function sequenceInit() {
 }
 
 const clickHandle = (e) => {
-  open.push(JSON.parse(e.target.id));
-  // open.push(JSON.parse(e.target.id));
-
-  if (isWin()) {
-    setTimeout(() => {
-      alert("we have a winner"),
+  if (!open.some(open => open.i === JSON.parse(e.target.id).i && open.j === JSON.parse(e.target.id).j)) {
+    console.log(JSON.parse(e.target.id).i);
+    open.push(JSON.parse(e.target.id));
+    updatelocalStorage()
+    if (isWin()) {
+      setTimeout(() => {
+        if (!open.length % 2 == 0) {
+          alert("x the winner")
+        }
+        else { alert("o the winner") }
         12500;
-    })
-  }
+      })
+      setTimeout(() => {
+        while (open.length > 0) {
+          undo();
+        } 15000;
 
-  if (TurnOfX) {
-    e.target.innerHTML = "o";
-    // console.log("it's x turn");
-    TurnOfX = false;
-  } else {
-    e.target.innerHTML = "x";
-    // console.log("it's O turn");
-    TurnOfX = true;
-  }
-};
+      })
+    }
+
+    if (!TurnOfX) {
+      e.target.innerHTML = "O";
+      // console.log("it's x turn");
+      TurnOfX = false;
+    } else {
+      e.target.innerHTML = "X";
+      // console.log("it's O turn");
+      TurnOfX = true;
+    }
+  };
+}
 
 createBoard(boardSize);
 
@@ -262,3 +298,5 @@ function ltrDiagonal() {
     return true;
   }
 }
+
+loadFromLocalStorage()
