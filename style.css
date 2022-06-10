@@ -75,3 +75,7 @@ body{
   .currentPlayer{
     background-color: yellow;
   }
+
+  .nune{
+    display: none;
+  }
