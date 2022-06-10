@@ -12,7 +12,15 @@ let boardSize = 3;
 let savedIndex = 0;
 let player1 = "";
 let player2 = "";
-localStorage.open = JSON.stringify([]);
+localStorage.open;// = JSON.stringify([]);
+localStorage.player1;
+localStorage.player2;
+localStorage.boardSize;
+
+
+
+
+createLoadGameFromLocalStorageButton()
 createUndoButton();
 createNewGameButton();
 createSaveGameButton();
@@ -37,6 +45,9 @@ function createNewGameButton() {
     while (open.length > 0) {
       undo();
     }
+    namesEl.innerHTML = '';
+    namesEl.append(player1El, player2El);
+    createNamesOnScreen()
   });
 }
 
@@ -52,6 +63,22 @@ function createLoadGameButton() {
   saveGameEl.addEventListener("click", () => {
     loadGame();
   });
+}
+function createLoadGameFromLocalStorageButton() {
+  const loadGameFromLocalStorageEl = document.getElementById("loadGameFromLocalStorage");
+  loadGameFromLocalStorageEl.addEventListener("click", () => {
+    loadGameFromLocalStorage();
+  });
+}
+function loadGameFromLocalStorage() {
+  // debugger
+  player1 = localStorage.player1;
+  player2 = localStorage.player2;
+  boardSize = localStorage.boardSize;
+  createBoard(boardSize);
+  createNamesOnScreen();
+  loadFromLocalStorage();
+  turnOfX();
 }
 
 //!!!!!!!!!!!! maby it is not needed because the turn determined by the open array length
@@ -127,6 +154,7 @@ function undo() {
   let j = open[lastCell].j;
   cards[i][j].innerHTML = "";
   open.pop();
+  turnOfX()
   // TurnOfX = !TurnOfX;
 }
 
@@ -139,10 +167,10 @@ function sequenceInit() {
 
 const clickHandle = (e) => {
   if (!open.some(open => open.i === JSON.parse(e.target.id).i && open.j === JSON.parse(e.target.id).j)) {
-    console.log(JSON.parse(e.target.id).i);
-    e.target.innerHTML = turnOfX()? "X":"O" // this line must be before the push, in order to work properly (the turn is determined by the array length)
+    // console.log(JSON.parse(e.target.id).i);
+    e.target.innerHTML = turnOfX() ? "X" : "O" // this line must be before the push, in order to work properly (the turn is determined by the array length)
     open.push(JSON.parse(e.target.id));
-    if(isWin()) namesEl.innerHTML = !turnOfX()? "X is the winner":"O is the winner";
+    if (isWin()) namesEl.innerHTML = !turnOfX() ? "X is the winner" : "O is the winner";
     updatelocalStorage();
     // if (isWin()) {
     //   setTimeout(() => {
@@ -163,25 +191,31 @@ const clickHandle = (e) => {
 }
 
 playersInputs();
-function playersInputs(){
+function playersInputs() {
   const formEl = document.querySelector("#userform");
-  
-  formEl.addEventListener("submit",(e)=>{
+
+  formEl.addEventListener("submit", (e) => {
     e.preventDefault();
     player1 = e.target.player1.value;
     player2 = e.target.player2.value;
     boardSize = e.target.boardSize.value;
     createNamesOnScreen();
     createBoard(boardSize);
+    updatelocalStorageNamesAndBboardSize()
     formEl.remove();
   })
 }
+function updatelocalStorageNamesAndBboardSize() {
+  localStorage.player1 = player1;
+  localStorage.player2 = player2;
+  localStorage.boardSize = boardSize;
+}
 
-function createNamesOnScreen(){
+function createNamesOnScreen() {
   player1El.innerHTML = player1;
   player2El.innerHTML = player2;
 
-  console.log(namesEl.player1Name);
+  // console.log(namesEl.player1Name);
 }
 
 
@@ -278,11 +312,11 @@ function ltrDiagonal() {
   }
 }
 
-loadFromLocalStorage()
+// loadFromLocalStorage()
 
 
-function turnOfX(){
-  if(open.length%2 == 0){
+function turnOfX() {
+  if (open.length % 2 == 0) {
     player1El.className = "currentPlayer"
     player2El.className = "";
     return true;
