@@ -55,3 +55,23 @@ body{
     background-color: #04AA6D;
     color: white;
   }
+
+  #namesText{
+    margin: auto;
+    background-color: darkmagenta;
+    width: 900px;
+    height: 100px;
+     padding: 20px; 
+
+  }
+
+  #player1Name{
+    float: left;
+  }
+  #player2Name{
+    float: right;
+  }
+
+  .currentPlayer{
+    background-color: yellow;
+  }

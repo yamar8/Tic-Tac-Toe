@@ -1,13 +1,18 @@
+const namesEl = document.querySelector("#namesText");
+const player1El = document.querySelector("#player1Name");
+const player2El = document.querySelector("#player2Name");
+player1El.className = "currentPlayer" // game always start with the first player.
 let cards = [];
 let open = []; //open = [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
 // let open = localStorage.open; //open = [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
 let openSaved = [];
-let TurnOfX = Boolean;
 let TurnOfXsaved = false;
 let sequence = []; // [0, 0, 0];
 let boardSize = 3;
 let savedIndex = 0;
-
+let player1 = "";
+let player2 = "";
+localStorage.open = JSON.stringify([]);
 createUndoButton();
 createNewGameButton();
 createSaveGameButton();
@@ -20,13 +25,6 @@ createLoadGameButton();
 {i: 2, j: 0},{i: 2, j: 1},{i: 2, j: 2}
 */
 
-function createSign(sign, element, id) {
-  return {
-    sign: sign,
-    element: element,
-    id: id,
-  };
-}
 function createUndoButton() {
   const undoEl = document.getElementById("undo");
   undoEl.addEventListener("click", () => {
@@ -55,24 +53,26 @@ function createLoadGameButton() {
     loadGame();
   });
 }
-upDateTurnOFX()
-function upDateTurnOFX() {
-  if (JSON.parse(localStorage.open).length % 2 == 0) {
-    TurnOfX = false;
-  }
-  TurnOfX = true;
-}
+
+//!!!!!!!!!!!! maby it is not needed because the turn determined by the open array length
+// upDateTurnOFX()
+// function upDateTurnOFX() {
+//   if (JSON.parse(localStorage.open).length % 2 == 0) {
+//     TurnOfX = false;
+//   }
+//   TurnOfX = true;
+// }
 
 function loadFromLocalStorage() {
   while (open.length != JSON.parse(localStorage.open).length) {
 
     let index = open.length;
-    open.push(JSON.parse(localStorage.open)[index]);
     let i = JSON.parse(localStorage.open)[index].i;
     let j = JSON.parse(localStorage.open)[index].j;
     // debugger
-    cards[i][j].innerHTML = TurnOfX ? "X" : "O";
-    TurnOfX = !TurnOfX;
+    cards[i][j].innerHTML = turnOfX() ? "X" : "O";
+    open.push(JSON.parse(localStorage.open)[index]); // i moved the line 
+    // TurnOfX = !TurnOfX;
   }
 }
 function updatelocalStorage() {
@@ -86,7 +86,6 @@ function saveGame() {
   for (let i = 0; i < open.length; i++) {
     openSaved.push(open[i]);
   }
-
 
 }
 
@@ -110,48 +109,13 @@ function loadGame() {
 //redo function redo one turn according to the openSaved array.
 function redo() {
   let index = open.length;
-  open.push(openSaved[index]);
   let i = openSaved[index].i;
   let j = openSaved[index].j;
-  cards[i][j].innerHTML = TurnOfX ? "X" : "O";
-  TurnOfX = !TurnOfX;
+  console.log(turnOfX());
+  cards[i][j].innerHTML = turnOfX() ? "X" : "O";
+  open.push(openSaved[index]);
+  // TurnOfX = !TurnOfX;
 }
-// function loadGame() {
-//   ///////need to fix open array in load game.
-//   TurnOfX = TurnOfXsaved;
-//   let open = [];
-//   for (let i = 0; i < openSaved.length; i++) {
-//     open.push(openSaved[i]);
-//   }
-//   openSaved = [];
-//   console.log(open);
-//   //clean all the board signs
-//     for (let i = 0; i < cards.length; i++) {
-//     for (let j = 0; j < cards[i].length; j++) {
-//       cards[i][j].innerHTML = "";
-//     }
-//   }
-
-//   for(let k =0;k<open.length;k++){
-//     let i = open[k].i;
-//     let j = open[k].j;
-//     if(k%2 == 0){
-//       cards[i][j].innerHTML = "o";
-//     }else{
-//       cards[i][j].innerHTML = "x";
-//     }
-//   }
-
-
-// for (let i = 0; i < cards.length; i++) {
-//   for (let j = 0; j < cards[i].length; j++) {
-//     console.log("cards[i][j].id: " + cards[i][j].id);
-//     console.log("open[i]: " + JSON.stringify[open[i]]);
-//     if (cards[i][j].id == JSON.stringify[open[i]]) {
-//       cards[i][j].innerHTML = "x";
-//     }
-//   }
-// }
 
 //undo function undo one turn (going back one index in open array)
 function undo() {
@@ -163,7 +127,7 @@ function undo() {
   let j = open[lastCell].j;
   cards[i][j].innerHTML = "";
   open.pop();
-  TurnOfX = !TurnOfX;
+  // TurnOfX = !TurnOfX;
 }
 
 function sequenceInit() {
@@ -176,39 +140,53 @@ function sequenceInit() {
 const clickHandle = (e) => {
   if (!open.some(open => open.i === JSON.parse(e.target.id).i && open.j === JSON.parse(e.target.id).j)) {
     console.log(JSON.parse(e.target.id).i);
+    e.target.innerHTML = turnOfX()? "X":"O" // this line must be before the push, in order to work properly (the turn is determined by the array length)
     open.push(JSON.parse(e.target.id));
-    updatelocalStorage()
-    if (isWin()) {
-      setTimeout(() => {
-        if (!open.length % 2 == 0) {
-          alert("x the winner")
-        }
-        else { alert("o the winner") }
-        12500;
-      })
-      setTimeout(() => {
-        while (open.length > 0) {
-          undo();
-        } 15000;
+    if(isWin()) namesEl.innerHTML = !turnOfX()? "X is the winner":"O is the winner";
+    updatelocalStorage();
+    // if (isWin()) {
+    //   setTimeout(() => {
+    //     if (!turnOfX()) {
+    //       alert("x the winner")
+    //     }
+    //     else { alert("o the winner") }
+    //     12500;
+    //   })
+    //   setTimeout(() => {
+    //     while (open.length > 0) {
+    //       undo();
+    //     } 15000;
 
-      })
-    }
-
-    if (!TurnOfX) {
-      e.target.innerHTML = "O";
-      // console.log("it's x turn");
-      TurnOfX = false;
-    } else {
-      e.target.innerHTML = "X";
-      // console.log("it's O turn");
-      TurnOfX = true;
-    }
+    //   })
+    // }
   };
 }
 
-createBoard(boardSize);
+playersInputs();
+function playersInputs(){
+  const formEl = document.querySelector("#userform");
+  
+  formEl.addEventListener("submit",(e)=>{
+    e.preventDefault();
+    player1 = e.target.player1.value;
+    player2 = e.target.player2.value;
+    boardSize = e.target.boardSize.value;
+    createNamesOnScreen();
+    createBoard(boardSize);
+    formEl.remove();
+  })
+}
+
+function createNamesOnScreen(){
+  player1El.innerHTML = player1;
+  player2El.innerHTML = player2;
+
+  console.log(namesEl.player1Name);
+}
+
 
 function createBoard(boardSize) {
+  // debugger;
   const board = document.getElementById("board");
   board.style.gridTemplateColumns = "150px ".repeat(boardSize);
   let counter = 0;
@@ -244,7 +222,8 @@ function isWin() {
 function fullRow() {
   //open array looks like this: [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
   //rowWin array looks like this: [0,0,0]
-  let k = Number(TurnOfX); // k  = 1 or 0 according to the current turn
+  let k = Number(turnOfX()); // k  = 1 or 0 according to the current turn
+  console.log(k);
   sequenceInit(); // initialize sequence array in each iteration
   for (; k < open.length; k += 2) {
     //  iterate on even cells
@@ -259,7 +238,7 @@ function fullRow() {
 function fullColumn() {
   //open array looks like this: [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
   //rowWin array looks like this: [0,0,0]
-  let k = Number(TurnOfX); // k  = 1 or 0 according to the current turn
+  let k = Number(turnOfX()); // k  = 1 or 0 according to the current turn
   sequenceInit(); // initialize rowWin in each iteration
   for (; k < open.length; k += 2) {
     sequence[open[k].j]++;
@@ -272,7 +251,7 @@ function fullColumn() {
 
 function rtlDiagonal() {
   let counter = 0;
-  let k = Number(TurnOfX);
+  let k = Number(turnOfX());
   for (; k < open.length; k += 2) {
     counter++;
     if (open[k].i != open[k].j) {
@@ -287,7 +266,7 @@ function rtlDiagonal() {
 function ltrDiagonal() {
   //left to rigth diagonal win
   let counter = 0;
-  let k = Number(TurnOfX);
+  let k = Number(turnOfX());
   for (; k < open.length; k += 2) {
     counter++;
     if (((open[k].i) + (open[k].j)) != boardSize - 1) {
@@ -300,3 +279,15 @@ function ltrDiagonal() {
 }
 
 loadFromLocalStorage()
+
+
+function turnOfX(){
+  if(open.length%2 == 0){
+    player1El.className = "currentPlayer"
+    player2El.className = "";
+    return true;
+  }
+  player2El.className = "currentPlayer"
+  player1El.className = "";
+  return false;
+}
