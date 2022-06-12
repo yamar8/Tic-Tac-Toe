@@ -1,7 +1,7 @@
 const namesEl = document.querySelector("#namesText");
 const player1El = document.querySelector("#player1Name");
 const player2El = document.querySelector("#player2Name");
-player1El.className = "currentPlayer" // game always start with the first player.
+player1El.className = "currentPlayer"; // game always start with the first player.
 let cards = [];
 let open = []; //open = [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
 // let open = localStorage.open; //open = [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
@@ -12,15 +12,12 @@ let boardSize = 3;
 let savedIndex = 0;
 let player1 = "";
 let player2 = "";
-localStorage.open;// = JSON.stringify([]);
+localStorage.open; // = JSON.stringify([]);
 localStorage.player1;
 localStorage.player2;
 localStorage.boardSize;
 
-
-
-
-createLoadGameFromLocalStorageButton()
+createLoadGameFromLocalStorageButton();
 createUndoButton();
 createNewGameButton();
 createSaveGameButton();
@@ -45,9 +42,10 @@ function createNewGameButton() {
     while (open.length > 0) {
       undo();
     }
-    namesEl.innerHTML = '';
+    namesEl.innerHTML = "";
     namesEl.append(player1El, player2El);
-    createNamesOnScreen()
+    createNamesOnScreen();
+    clock();
   });
 }
 
@@ -65,7 +63,9 @@ function createLoadGameButton() {
   });
 }
 function createLoadGameFromLocalStorageButton() {
-  const loadGameFromLocalStorageEl = document.getElementById("loadGameFromLocalStorage");
+  const loadGameFromLocalStorageEl = document.getElementById(
+    "loadGameFromLocalStorage"
+  );
   loadGameFromLocalStorageEl.addEventListener("click", () => {
     loadGameFromLocalStorage();
   });
@@ -92,28 +92,25 @@ function loadGameFromLocalStorage() {
 
 function loadFromLocalStorage() {
   while (open.length != JSON.parse(localStorage.open).length) {
-
     let index = open.length;
     let i = JSON.parse(localStorage.open)[index].i;
     let j = JSON.parse(localStorage.open)[index].j;
     // debugger
     cards[i][j].innerHTML = turnOfX() ? "X" : "O";
-    open.push(JSON.parse(localStorage.open)[index]); // i moved the line 
+    open.push(JSON.parse(localStorage.open)[index]); // i moved the line
     // TurnOfX = !TurnOfX;
   }
 }
 function updatelocalStorage() {
-  localStorage.open = JSON.stringify(open)
+  localStorage.open = JSON.stringify(open);
 }
 
 function saveGame() {
-
-  savedIndex = open.length; // last index 
+  savedIndex = open.length; // last index
 
   for (let i = 0; i < open.length; i++) {
     openSaved.push(open[i]);
   }
-
 }
 
 //   TurnOfXsaved = TurnOfX;
@@ -154,7 +151,7 @@ function undo() {
   let j = open[lastCell].j;
   cards[i][j].innerHTML = "";
   open.pop();
-  turnOfX()
+  turnOfX();
   // TurnOfX = !TurnOfX;
 }
 
@@ -166,11 +163,18 @@ function sequenceInit() {
 }
 
 const clickHandle = (e) => {
-  if (!open.some(open => open.i === JSON.parse(e.target.id).i && open.j === JSON.parse(e.target.id).j)) {
+  if (
+    !open.some(
+      (open) =>
+        open.i === JSON.parse(e.target.id).i &&
+        open.j === JSON.parse(e.target.id).j
+    )
+  ) {
     // console.log(JSON.parse(e.target.id).i);
-    e.target.innerHTML = turnOfX() ? "X" : "O" // this line must be before the push, in order to work properly (the turn is determined by the array length)
+    e.target.innerHTML = turnOfX() ? "X" : "O"; // this line must be before the push, in order to work properly (the turn is determined by the array length)
     open.push(JSON.parse(e.target.id));
-    if (isWin()) namesEl.innerHTML = !turnOfX() ? "X is the winner" : "O is the winner";
+    if (isWin())
+      namesEl.innerHTML = !turnOfX() ? "X is the winner" : "O is the winner";
     updatelocalStorage();
     // if (isWin()) {
     //   setTimeout(() => {
@@ -187,8 +191,8 @@ const clickHandle = (e) => {
 
     //   })
     // }
-  };
-}
+  }
+};
 
 playersInputs();
 function playersInputs() {
@@ -201,9 +205,10 @@ function playersInputs() {
     boardSize = e.target.boardSize.value;
     createNamesOnScreen();
     createBoard(boardSize);
-    updatelocalStorageNamesAndBboardSize()
+    updatelocalStorageNamesAndBboardSize();
+    clock();
     formEl.remove();
-  })
+  });
 }
 function updatelocalStorageNamesAndBboardSize() {
   localStorage.player1 = player1;
@@ -217,7 +222,6 @@ function createNamesOnScreen() {
 
   // console.log(namesEl.player1Name);
 }
-
 
 function createBoard(boardSize) {
   // debugger;
@@ -303,7 +307,7 @@ function ltrDiagonal() {
   let k = Number(turnOfX());
   for (; k < open.length; k += 2) {
     counter++;
-    if (((open[k].i) + (open[k].j)) != boardSize - 1) {
+    if (open[k].i + open[k].j != boardSize - 1) {
       return false;
     }
   }
@@ -314,14 +318,50 @@ function ltrDiagonal() {
 
 // loadFromLocalStorage()
 
-
 function turnOfX() {
   if (open.length % 2 == 0) {
-    player1El.className = "currentPlayer"
+    player1El.className = "currentPlayer";
     player2El.className = "";
     return true;
   }
-  player2El.className = "currentPlayer"
+  player2El.className = "currentPlayer";
   player1El.className = "";
   return false;
+}
+// countUpTimer();
+// function countUpTimer(){
+
+//   let start = Date.now();
+// setInterval(function() {
+//     let delta = Date.now() - start; // milliseconds elapsed since start
+//     console.log(Math.floor(delta / 1000)); // in seconds
+//     // alternatively just show wall clock time:
+//     // console.log(new Date().toUTCString());
+// }, 1000); // update about every second
+// }
+
+function clock(){
+
+  const minutesLabel = document.getElementById("minutes");
+  const secondsLabel = document.getElementById("seconds");
+
+  let totalSeconds = 0;
+
+setInterval(setTime, 1000);
+
+function setTime() {
+  ++totalSeconds;
+  secondsLabel.innerHTML = pad(totalSeconds % 60);
+  minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
+}
+
+function pad(val) {
+  var valString = val + "";
+  if (valString.length < 2) {
+    return "0" + valString;
+  } else {
+    return valString;
+  }
+}
+
 }

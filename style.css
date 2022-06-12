@@ -79,3 +79,19 @@ body{
   .nune{
     display: none;
   }
+
+  #timer{
+   text-align: center;
+   font-size: 50px;
+   font-family:'digital-clock-font';
+    /* margin: auto;
+    width: auto;
+    justify-content: center;
+    justify-items:center ; */
+    background-color: #04AA6D;
+  }
+
+  @font-face{
+    font-family:'digital-clock-font';
+    src: url('./RADIOLAND.TTF');
+   }
