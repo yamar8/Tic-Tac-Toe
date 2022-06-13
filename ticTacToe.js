@@ -19,7 +19,8 @@ localStorage.boardSize;
 let intervalID;
 let totalSeconds = 0; // total second of the clock.
 let totalSecondsSaved; // saved game total seconds
-
+const body = document.querySelector("body");
+body.style.backgroundImage = 'url("./pics/openingbg.jpg")';
 
 
 createLoadGameFromLocalStorageButton();
@@ -38,6 +39,7 @@ createLoadGameButton();
 
 function createUndoButton() {
   const undoEl = document.getElementById("undo");
+  undoEl.innerHTML = '<img src="./pics/undo.png" width="94px" height="98px"/>';
   undoEl.addEventListener("click", () => {
     undo();
   });
@@ -51,7 +53,7 @@ function createNewGameButton() {
     namesEl.innerHTML = "";
     namesEl.append(player1El, player2El);
     createNamesOnScreen();
-    
+
     clearInterval(intervalID);
     totalSeconds = 0;
     clock();
@@ -99,6 +101,7 @@ function loadGameFromLocalStorage() {
 //   }
 //   TurnOfX = true;
 // }
+
 
 function loadFromLocalStorage() {
   while (open.length != JSON.parse(localStorage.open).length) {
@@ -176,9 +179,9 @@ const clickHandle = (e) => {
     )
   ) {
     // console.log(JSON.parse(e.target.id).i);
-    e.target.innerHTML = turnOfX() ? "X" : "O"; // this line must be before the push, in order to work properly (the turn is determined by the array length)
+    e.target.className = turnOfX() ? "X" : "O"; // this line must be before the push, in order to work properly (the turn is determined by the array length)
     open.push(JSON.parse(e.target.id));
-    if (isWin()){
+    if (isWin()) {
       localStorage.minLength = open.length;
       clearInterval(intervalID);
       namesEl.innerHTML = !turnOfX() ? "X is the winner" : "O is the winner";
@@ -218,6 +221,7 @@ function createNamesOnScreen() {
 
 function createBoard(boardSize) {
   // debugger;
+  body.style.backgroundImage = 'url("./pics/gamebg.jpg")'
   const board = document.getElementById("board");
   board.style.gridTemplateColumns = "150px ".repeat(boardSize);
   let counter = 0;
@@ -333,28 +337,29 @@ function turnOfX() {
 // }, 1000); // update about every second
 // }
 
-function clock(){
+function clock() {
 
   const minutesLabel = document.getElementById("minutes");
   const secondsLabel = document.getElementById("seconds");
 
   // let totalSeconds = 0;
 
-  intervalID  = setInterval(setTime, 1000);
+  intervalID = setInterval(setTime, 1000);
 
-function setTime() {
-  ++totalSeconds;
-  secondsLabel.innerHTML = pad(totalSeconds % 60);
-  minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
-}
-
-function pad(val) {
-  let valString = val + "";
-  if (valString.length < 2) {
-    return "0" + valString;
-  } else {
-    return valString;
+  function setTime() {
+    ++totalSeconds;
+    secondsLabel.innerHTML = pad(totalSeconds % 60);
+    minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
   }
-}
+
+  function pad(val) {
+    let valString = val + "";
+    if (valString.length < 2) {
+      return "0" + valString;
+    } else {
+      return valString;
+    }
+  }
 
 }
+

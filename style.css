@@ -1,5 +1,6 @@
 body{
-  background-color: rgba(18, 137, 75, 0.575);
+  /* background-image: url("./pics/openingbg.jpg"); */
+  background-size: cover;
 }
 
 #board {
@@ -17,7 +18,36 @@ body{
     }
 
 .card {
-    background-color: rgba(232, 12, 12, 0.728);
+    background-image: url("./pics/empty.jpg");
+    background-size: cover;
+    /* aspect-ratio: 1; */
+    height: 150px;
+    width: 150px;
+    /* margin: auto; */
+    font-size: 65px;
+    text-align: center;
+    border-radius: 10px;
+      border-style: solid;
+      border-color: rgb(123, 205, 90);
+  
+  }
+.X {
+    background-image: url("./pics/X.jpg");
+    background-size: cover;
+    /* aspect-ratio: 1; */
+    height: 150px;
+    width: 150px;
+    /* margin: auto; */
+    font-size: 65px;
+    text-align: center;
+    border-radius: 10px;
+      border-style: solid;
+      border-color: rgb(123, 205, 90);
+  
+  }
+.O {
+    background-image: url("./pics/O.jpg");
+    background-size: cover;
     /* aspect-ratio: 1; */
     height: 150px;
     width: 150px;
@@ -33,17 +63,17 @@ body{
 
   .topnav {
     overflow: hidden;
-    background-color: #333;
+    /* background-color: #333; */
   }
   
   .topnav button {
     float: left;
-    color: #ffffff;
+    color: #9f2e2e;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
-    background-color: #030202;
+    /* background-color: #030202; */
   }
   
   .topnav button:hover {
@@ -52,31 +82,43 @@ body{
   }
   
   .topnav button.active {
-    background-color: #04AA6D;
-    color: white;
+    /* background-color: #04AA6D; */
+    color: #9f2e2e;
   }
 
   #namesText{
     margin: auto;
-    background-color: darkmagenta;
+    text-align: center;
+    /* background-color: darkmagenta; */
     width: 900px;
     height: 100px;
     padding: 20px; 
+    color:white;
     font-size: 50px;
+    /* float:initial; */
+    text-shadow:
+    0 0 5px #808bff, 0 0 10px hsl(189, 100%, 72%),
+    0 0 20px #fff780, 0 0 40px  hsl(189, 100%, 72%);
     
   }
 
   #player1Name{
     float: left;
+    color: whitesmoke;
   }
   #player2Name{
     float: right;
+    color: whitesmoke;
   }
 
   .currentPlayer{
-    background-color: yellow;
+    /* background-color: yellow; */
+    font-size: 60px;
+    color: #fff;
+    text-shadow:
+    0 0 5px #fff700, 0 0 10px #fff700,
+    0 0 20px #fff700, 0 0 40px #fff700;
   }
-
   .nune{
     display: none;
   }
@@ -85,11 +127,12 @@ body{
    text-align: center;
    font-size: 50px;
    font-family:'digital-clock-font';
+   color: white;
     /* margin: auto;
     width: auto;
     justify-content: center;
     justify-items:center ; */
-    background-color: #04AA6D;
+    /* background-color: #04AA6D; */
   }
 
   @font-face{
