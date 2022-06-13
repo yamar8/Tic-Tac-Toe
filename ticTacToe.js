@@ -16,6 +16,11 @@ localStorage.open; // = JSON.stringify([]);
 localStorage.player1;
 localStorage.player2;
 localStorage.boardSize;
+let intervalID;
+let totalSeconds = 0; // total second of the clock.
+let totalSecondsSaved;
+
+
 
 createLoadGameFromLocalStorageButton();
 createUndoButton();
@@ -29,6 +34,7 @@ createLoadGameButton();
 {i: 1, j: 0},{i: 1, j: 1},{i: 1, j: 2}
 {i: 2, j: 0},{i: 2, j: 1},{i: 2, j: 2}
 */
+
 
 function createUndoButton() {
   const undoEl = document.getElementById("undo");
@@ -45,7 +51,11 @@ function createNewGameButton() {
     namesEl.innerHTML = "";
     namesEl.append(player1El, player2El);
     createNamesOnScreen();
+    
+    clearInterval(intervalID);
+    totalSeconds = 0;
     clock();
+
   });
 }
 
@@ -107,7 +117,7 @@ function updatelocalStorage() {
 
 function saveGame() {
   savedIndex = open.length; // last index
-
+  totalSecondsSaved = totalSeconds;
   for (let i = 0; i < open.length; i++) {
     openSaved.push(open[i]);
   }
@@ -117,6 +127,7 @@ function saveGame() {
 // }
 
 function loadGame() {
+  totalSeconds = totalSecondsSaved;
   if (open > openSaved) {
     let undoCounter = open.length - savedIndex;
     while (undoCounter > 0) {
@@ -173,24 +184,12 @@ const clickHandle = (e) => {
     // console.log(JSON.parse(e.target.id).i);
     e.target.innerHTML = turnOfX() ? "X" : "O"; // this line must be before the push, in order to work properly (the turn is determined by the array length)
     open.push(JSON.parse(e.target.id));
-    if (isWin())
+    if (isWin()){
+      localStorage.minLength = open.length;
+      clearInterval(intervalID);
       namesEl.innerHTML = !turnOfX() ? "X is the winner" : "O is the winner";
+    }
     updatelocalStorage();
-    // if (isWin()) {
-    //   setTimeout(() => {
-    //     if (!turnOfX()) {
-    //       alert("x the winner")
-    //     }
-    //     else { alert("o the winner") }
-    //     12500;
-    //   })
-    //   setTimeout(() => {
-    //     while (open.length > 0) {
-    //       undo();
-    //     } 15000;
-
-    //   })
-    // }
   }
 };
 
@@ -345,9 +344,9 @@ function clock(){
   const minutesLabel = document.getElementById("minutes");
   const secondsLabel = document.getElementById("seconds");
 
-  let totalSeconds = 0;
+  // let totalSeconds = 0;
 
-setInterval(setTime, 1000);
+  intervalID  = setInterval(setTime, 1000);
 
 function setTime() {
   ++totalSeconds;
@@ -356,7 +355,7 @@ function setTime() {
 }
 
 function pad(val) {
-  var valString = val + "";
+  let valString = val + "";
   if (valString.length < 2) {
     return "0" + valString;
   } else {
