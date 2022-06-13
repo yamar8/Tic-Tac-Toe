@@ -18,7 +18,7 @@ localStorage.player2;
 localStorage.boardSize;
 let intervalID;
 let totalSeconds = 0; // total second of the clock.
-let totalSecondsSaved;
+let totalSecondsSaved; // saved game total seconds
 
 
 
@@ -105,10 +105,8 @@ function loadFromLocalStorage() {
     let index = open.length;
     let i = JSON.parse(localStorage.open)[index].i;
     let j = JSON.parse(localStorage.open)[index].j;
-    // debugger
     cards[i][j].innerHTML = turnOfX() ? "X" : "O";
     open.push(JSON.parse(localStorage.open)[index]); // i moved the line
-    // TurnOfX = !TurnOfX;
   }
 }
 function updatelocalStorage() {
@@ -123,8 +121,6 @@ function saveGame() {
   }
 }
 
-//   TurnOfXsaved = TurnOfX;
-// }
 
 function loadGame() {
   totalSeconds = totalSecondsSaved;
@@ -149,7 +145,6 @@ function redo() {
   console.log(turnOfX());
   cards[i][j].innerHTML = turnOfX() ? "X" : "O";
   open.push(openSaved[index]);
-  // TurnOfX = !TurnOfX;
 }
 
 //undo function undo one turn (going back one index in open array)
@@ -163,7 +158,6 @@ function undo() {
   cards[i][j].innerHTML = "";
   open.pop();
   turnOfX();
-  // TurnOfX = !TurnOfX;
 }
 
 function sequenceInit() {
