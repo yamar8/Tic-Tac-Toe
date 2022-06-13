@@ -28,7 +28,7 @@ body{
     text-align: center;
     border-radius: 10px;
       border-style: solid;
-      border-color: rgb(123, 205, 90);
+      border-color: black;
   
   }
 .X {
@@ -42,7 +42,7 @@ body{
     text-align: center;
     border-radius: 10px;
       border-style: solid;
-      border-color: rgb(123, 205, 90);
+      /* border-color: rgb(123, 205, 90); */
   
   }
 .O {
@@ -56,7 +56,7 @@ body{
     text-align: center;
     border-radius: 10px;
       border-style: solid;
-      border-color: rgb(123, 205, 90);
+      /* border-color: rgb(123, 205, 90); */
   
   }
 
@@ -122,6 +122,14 @@ body{
   .nune{
     display: none;
   }
+  /* #play{ */
+    /* background-attachment: fixed;
+  } */
+  #play {
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    }
 
   #timer{
    text-align: center;

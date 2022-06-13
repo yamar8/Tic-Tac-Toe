@@ -1,6 +1,8 @@
 const namesEl = document.querySelector("#namesText");
+const board = document.getElementById("board");
 const player1El = document.querySelector("#player1Name");
 const player2El = document.querySelector("#player2Name");
+const formEl = document.querySelector("#userform");
 player1El.className = "currentPlayer"; // game always start with the first player.
 let cards = [];
 let open = []; //open = [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
@@ -16,6 +18,7 @@ localStorage.open; // = JSON.stringify([]);
 localStorage.player1;
 localStorage.player2;
 localStorage.boardSize;
+localStorage.timmer;
 let intervalID;
 let totalSeconds = 0; // total second of the clock.
 let totalSecondsSaved; // saved game total seconds
@@ -36,6 +39,20 @@ createLoadGameButton();
 {i: 2, j: 0},{i: 2, j: 1},{i: 2, j: 2}
 */
 
+// function createHomeButton() {
+//   namesEl.style.display = 'none';
+//   board.style.display = 'none';
+//   document.querySelector("#timer").style.display = 'none';
+//   formEl.style.display = 'block';
+// }
+homeScreen();
+function homeScreen() {
+  const homeEl = document.querySelector("#homescreen");
+  homeEl.innerHTML = '<img src="./pics/home.png" width="94px" height="98px"/>'
+  homeEl.addEventListener("click", () => {
+    window.location.reload();
+  })
+}
 
 function createUndoButton() {
   const undoEl = document.getElementById("undo");
@@ -53,10 +70,11 @@ function createNewGameButton() {
     namesEl.innerHTML = "";
     namesEl.append(player1El, player2El);
     createNamesOnScreen();
-
-    clearInterval(intervalID);
-    totalSeconds = 0;
-    clock();
+    if (player1) {
+      clearInterval(intervalID);
+      totalSeconds = 0;
+      clock();
+    }
 
   });
 }
@@ -80,13 +98,18 @@ function createLoadGameFromLocalStorageButton() {
   );
   loadGameFromLocalStorageEl.addEventListener("click", () => {
     loadGameFromLocalStorage();
+
   });
 }
 function loadGameFromLocalStorage() {
   // debugger
+  formEl.style.display = 'none';
   player1 = localStorage.player1;
   player2 = localStorage.player2;
   boardSize = localStorage.boardSize;
+  clearInterval(intervalID);
+  totalSeconds = localStorage.timmer;
+  clock();
   createBoard(boardSize);
   createNamesOnScreen();
   loadFromLocalStorage();
@@ -108,9 +131,10 @@ function loadFromLocalStorage() {
     let index = open.length;
     let i = JSON.parse(localStorage.open)[index].i;
     let j = JSON.parse(localStorage.open)[index].j;
-    cards[i][j].innerHTML = turnOfX() ? "X" : "O";
+    cards[i][j].className = turnOfX() ? "X" : "O";
     open.push(JSON.parse(localStorage.open)[index]); // i moved the line
   }
+
 }
 function updatelocalStorage() {
   localStorage.open = JSON.stringify(open);
@@ -126,6 +150,7 @@ function saveGame() {
 
 
 function loadGame() {
+  if (!openSaved.length) return;
   totalSeconds = totalSecondsSaved;
   if (open > openSaved) {
     let undoCounter = open.length - savedIndex;
@@ -146,7 +171,7 @@ function redo() {
   let i = openSaved[index].i;
   let j = openSaved[index].j;
   console.log(turnOfX());
-  cards[i][j].innerHTML = turnOfX() ? "X" : "O";
+  cards[i][j].className = turnOfX() ? "X" : "O";
   open.push(openSaved[index]);
 }
 
@@ -158,7 +183,7 @@ function undo() {
   let lastCell = open.length - 1;
   let i = open[lastCell].i;
   let j = open[lastCell].j;
-  cards[i][j].innerHTML = "";
+  cards[i][j].className = "card";
   open.pop();
   turnOfX();
 }
@@ -171,28 +196,31 @@ function sequenceInit() {
 }
 
 const clickHandle = (e) => {
-  if (
-    !open.some(
+
+
+  if (isWin() ||
+    open.some(
       (open) =>
         open.i === JSON.parse(e.target.id).i &&
         open.j === JSON.parse(e.target.id).j
     )
-  ) {
-    // console.log(JSON.parse(e.target.id).i);
-    e.target.className = turnOfX() ? "X" : "O"; // this line must be before the push, in order to work properly (the turn is determined by the array length)
-    open.push(JSON.parse(e.target.id));
-    if (isWin()) {
-      localStorage.minLength = open.length;
-      clearInterval(intervalID);
-      namesEl.innerHTML = !turnOfX() ? "X is the winner" : "O is the winner";
-    }
-    updatelocalStorage();
+  ) { return; }
+  // console.log(JSON.parse(e.target.id).i);
+  e.target.className = turnOfX() ? "X" : "O"; // this line must be before the push, in order to work properly (the turn is determined by the array length)
+  open.push(JSON.parse(e.target.id));
+
+  if (isWin()) {
+    localStorage.minLength = open.length;
+    clearInterval(intervalID);
+    namesEl.innerHTML = !turnOfX() ? "X is the winner" : "O is the winner";
+
   }
+  updatelocalStorage();
+
 };
 
 playersInputs();
 function playersInputs() {
-  const formEl = document.querySelector("#userform");
 
   formEl.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -203,13 +231,15 @@ function playersInputs() {
     createBoard(boardSize);
     updatelocalStorageNamesAndBboardSize();
     clock();
-    formEl.remove();
+    // formEl.remove();
+    formEl.style.display = 'none';
   });
 }
 function updatelocalStorageNamesAndBboardSize() {
   localStorage.player1 = player1;
   localStorage.player2 = player2;
   localStorage.boardSize = boardSize;
+
 }
 
 function createNamesOnScreen() {
@@ -222,7 +252,6 @@ function createNamesOnScreen() {
 function createBoard(boardSize) {
   // debugger;
   body.style.backgroundImage = 'url("./pics/gamebg.jpg")'
-  const board = document.getElementById("board");
   board.style.gridTemplateColumns = "150px ".repeat(boardSize);
   let counter = 0;
   for (let i = 0; i < boardSize; i++) {
@@ -350,6 +379,7 @@ function clock() {
     ++totalSeconds;
     secondsLabel.innerHTML = pad(totalSeconds % 60);
     minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
+    localStorage.timmer = totalSeconds;
   }
 
   function pad(val) {
