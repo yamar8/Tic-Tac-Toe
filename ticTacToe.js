@@ -9,7 +9,7 @@ const clockEl = document.querySelector('#timer');
 const body = document.querySelector("body");
 
 //Some init:
-body.style.backgroundImage = 'url("./pics/openingbg.jpg")';
+body.style.backgroundImage = 'url("./pics/nobg.jpg")';
 clockEl.style.display = 'none';
 player1El.className = "currentPlayer"; // game always start with the first player.
 
@@ -66,7 +66,7 @@ function createHomeScreenButton() {
 
 function createUndoButton() {
   const undoEl = document.getElementById("undo");
-  undoEl.innerHTML = '<img src="./pics/undo.png" width="94px" height="98px"/>';
+  undoEl.innerHTML = '<img src="./pics/Undo.jpg" width="94px" height="98px"/>';
   undoEl.addEventListener("click", () => {
     undo();
   });

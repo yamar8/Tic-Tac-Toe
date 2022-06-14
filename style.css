@@ -147,3 +147,16 @@ body{
     font-family:'digital-clock-font';
     src: url('./RADIOLAND.TTF');
    }
+
+   ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    background-color: rgb(88, 113, 188) ;
+    color: rgb(37, 33, 33);
+    border-radius: 20px;
+    text-align: center;
+   
+  }
+  #player1,#player2,#boardSize{
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+  }
