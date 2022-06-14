@@ -23,7 +23,7 @@ let intervalID;
 let totalSeconds = 0; // total second of the clock.
 let totalSecondsSaved; // saved game total seconds
 const body = document.querySelector("body");
-body.style.backgroundImage = 'url("./pics/openingbg.jpg")';
+body.style.backgroundImage = 'url("./pics/nobg.jpg")';
 
 
 createLoadGameFromLocalStorageButton();
@@ -56,7 +56,7 @@ function homeScreen() {
 
 function createUndoButton() {
   const undoEl = document.getElementById("undo");
-  undoEl.innerHTML = '<img src="./pics/undo.png" width="94px" height="98px"/>';
+  undoEl.innerHTML = '<img src="./pics/Undo.jpg" width="94px" height="98px"/>';
   undoEl.addEventListener("click", () => {
     undo();
   });
