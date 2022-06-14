@@ -1,36 +1,44 @@
+//Elements:
 const namesEl = document.querySelector("#namesText");
 const board = document.getElementById("board");
 const player1El = document.querySelector("#player1Name");
 const player2El = document.querySelector("#player2Name");
 const formEl = document.querySelector("#userform");
+const navEl = document.querySelector(".topnav");
+const clockEl = document.querySelector('#timer');
+const body = document.querySelector("body");
+
+//Some init:
+body.style.backgroundImage = 'url("./pics/openingbg.jpg")';
+clockEl.style.display = 'none';
 player1El.className = "currentPlayer"; // game always start with the first player.
+
+//Global Arrays:
 let cards = [];
 let open = []; //open = [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
-// let open = localStorage.open; //open = [{i: 1, j: 0},{i: 0, j: 2},{i: 1, j: 1},{i: 1, j: 0},{i: 2, j: 2}]
 let openSaved = [];
-let TurnOfXsaved = false;
 let sequence = []; // [0, 0, 0];
+
+//Global Variables init:
 let boardSize = 3;
 let savedIndex = 0;
 let player1 = "";
 let player2 = "";
+let intervalID;
+let totalSeconds = 0; // total second of the clock.
+let totalSecondsSaved; // saved game total seconds
+
+//Local Storage init:
 localStorage.open; // = JSON.stringify([]);
 localStorage.player1;
 localStorage.player2;
 localStorage.boardSize;
 localStorage.timmer;
-let intervalID;
-let totalSeconds = 0; // total second of the clock.
-let totalSecondsSaved; // saved game total seconds
-const body = document.querySelector("body");
-body.style.backgroundImage = 'url("./pics/openingbg.jpg")';
 
+//call to functions:
+createButtons();
+playersInputs();
 
-createLoadGameFromLocalStorageButton();
-createUndoButton();
-createNewGameButton();
-createSaveGameButton();
-createLoadGameButton();
 
 /* 3X3 board illustration: 
 
@@ -39,14 +47,16 @@ createLoadGameButton();
 {i: 2, j: 0},{i: 2, j: 1},{i: 2, j: 2}
 */
 
-// function createHomeButton() {
-//   namesEl.style.display = 'none';
-//   board.style.display = 'none';
-//   document.querySelector("#timer").style.display = 'none';
-//   formEl.style.display = 'block';
-// }
-homeScreen();
-function homeScreen() {
+function createButtons(){
+  navEl.style.display = 'none';
+  createLoadGameFromLocalStorageButton();
+  createUndoButton();
+  createNewGameButton();
+  createSaveGameButton();
+  createLoadGameButton();
+  createHomeScreenButton();
+}
+function createHomeScreenButton() {
   const homeEl = document.querySelector("#homescreen");
   homeEl.innerHTML = '<img src="./pics/home.png" width="94px" height="98px"/>'
   homeEl.addEventListener("click", () => {
@@ -102,7 +112,6 @@ function createLoadGameFromLocalStorageButton() {
   });
 }
 function loadGameFromLocalStorage() {
-  // debugger
   formEl.style.display = 'none';
   player1 = localStorage.player1;
   player2 = localStorage.player2;
@@ -116,16 +125,6 @@ function loadGameFromLocalStorage() {
   turnOfX();
 }
 
-//!!!!!!!!!!!! maby it is not needed because the turn determined by the open array length
-// upDateTurnOFX()
-// function upDateTurnOFX() {
-//   if (JSON.parse(localStorage.open).length % 2 == 0) {
-//     TurnOfX = false;
-//   }
-//   TurnOfX = true;
-// }
-
-
 function loadFromLocalStorage() {
   while (open.length != JSON.parse(localStorage.open).length) {
     let index = open.length;
@@ -136,6 +135,7 @@ function loadFromLocalStorage() {
   }
 
 }
+
 function updatelocalStorage() {
   localStorage.open = JSON.stringify(open);
 }
@@ -197,9 +197,7 @@ function sequenceInit() {
 
 const clickHandle = (e) => {
 
-
-  if (isWin() ||
-    open.some(
+  if (isWin() || open.some(
       (open) =>
         open.i === JSON.parse(e.target.id).i &&
         open.j === JSON.parse(e.target.id).j
@@ -219,7 +217,6 @@ const clickHandle = (e) => {
 
 };
 
-playersInputs();
 function playersInputs() {
 
   formEl.addEventListener("submit", (e) => {
@@ -227,6 +224,8 @@ function playersInputs() {
     player1 = e.target.player1.value;
     player2 = e.target.player2.value;
     boardSize = e.target.boardSize.value;
+    navEl.style.display = 'block';
+    clockEl.style.display = 'block';
     createNamesOnScreen();
     createBoard(boardSize);
     updatelocalStorageNamesAndBboardSize();
@@ -235,6 +234,7 @@ function playersInputs() {
     formEl.style.display = 'none';
   });
 }
+
 function updatelocalStorageNamesAndBboardSize() {
   localStorage.player1 = player1;
   localStorage.player2 = player2;
@@ -250,17 +250,14 @@ function createNamesOnScreen() {
 }
 
 function createBoard(boardSize) {
-  // debugger;
   body.style.backgroundImage = 'url("./pics/gamebg.jpg")'
   board.style.gridTemplateColumns = "150px ".repeat(boardSize);
   let counter = 0;
   for (let i = 0; i < boardSize; i++) {
-    // console.log(board.style.gridTemplateColumns);
     cards.push([]); // cards = [[],[],[]]
   }
   for (let i = 0; i < boardSize; i++) {
     for (let j = cards[i].length; j < boardSize; j++) {
-      // debugger;
       const element = createCardEl(counter);
       element.id = JSON.stringify({ i, j });
       cards[i].push(element);
@@ -268,7 +265,6 @@ function createBoard(boardSize) {
       element.addEventListener("click", clickHandle);
     }
   }
-  // console.log(cards);
 }
 
 function createCardEl(idx) {
