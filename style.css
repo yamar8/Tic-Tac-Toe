@@ -131,12 +131,13 @@ body{
     background-repeat:no-repeat;
     border: none;
     /* margin: auto; */
-
-    }
-    #playimg{
-      width: 250px;
-      height: 120px;
-      margin-left: 30px;
+    
+  }
+  #playimg{
+      border-radius: 25px;
+      width: 200px;
+      height: 100px;
+      margin-left: 55px;
       
     }
 
@@ -175,6 +176,9 @@ body{
     padding: 20px;
     font-size:18pt;
     
+  }
+  ::placeholder{
+    text-align: center;
   }
 
   #form{
